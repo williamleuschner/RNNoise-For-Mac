@@ -1,0 +1,584 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6B55321E259591C1000D15AF /* RNNoise__macOS_AudioUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */; };
+		6B553222259591C1000D15AF /* DSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 6B553221259591C1000D15AF /* DSPKernel.hpp */; };
+		6B553224259591C1000D15AF /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6B553223259591C1000D15AF /* DSPKernel.mm */; };
+		6B553226259591C1000D15AF /* BufferedAudioBus.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 6B553225259591C1000D15AF /* BufferedAudioBus.hpp */; };
+		6B553229259591C1000D15AF /* RNNoise__macOS_DSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 6B553228259591C1000D15AF /* RNNoise__macOS_DSPKernel.hpp */; };
+		6B55322B259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6B55322A259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm */; };
+		6B55322E259591C1000D15AF /* AudioUnitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B55322D259591C1000D15AF /* AudioUnitViewController.swift */; };
+		6B553232259591C1000D15AF /* AudioUnitViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6B553230259591C1000D15AF /* AudioUnitViewController.xib */; };
+		6B553237259591C1000D15AF /* RNNoise (macOS).appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6B553219259591C1000D15AF /* RNNoise (macOS).appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6B67D45625946BD0008BC03B /* RNNoise_For_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B67D45525946BD0008BC03B /* RNNoise_For_MacApp.swift */; };
+		6B67D45825946BD0008BC03B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B67D45725946BD0008BC03B /* ContentView.swift */; };
+		6B67D45A25946BD1008BC03B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B67D45925946BD1008BC03B /* Assets.xcassets */; };
+		6B67D45D25946BD1008BC03B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B67D45C25946BD1008BC03B /* Preview Assets.xcassets */; };
+		6B7F9FB32595B6CD005463B4 /* librnnoise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B67D56325958B10008BC03B /* librnnoise.a */; };
+		6B7F9FDD2595BBA9005463B4 /* librnnoise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B67D56325958B10008BC03B /* librnnoise.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6B553235259591C1000D15AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6B67D44A25946BD0008BC03B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6B553218259591C1000D15AF;
+			remoteInfo = "RNNoise (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6B67D4A425947DED008BC03B /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6B553237259591C1000D15AF /* RNNoise (macOS).appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B67D4D025958715008BC03B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6B553219259591C1000D15AF /* RNNoise (macOS).appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "RNNoise (macOS).appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B55321C259591C1000D15AF /* RNNoise__macOS_AudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNoise__macOS_AudioUnit.h; sourceTree = "<group>"; };
+		6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNoise__macOS_AudioUnit.m; sourceTree = "<group>"; };
+		6B553221259591C1000D15AF /* DSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernel.hpp; sourceTree = "<group>"; };
+		6B553223259591C1000D15AF /* DSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernel.mm; sourceTree = "<group>"; };
+		6B553225259591C1000D15AF /* BufferedAudioBus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BufferedAudioBus.hpp; sourceTree = "<group>"; };
+		6B553227259591C1000D15AF /* RNNoise__macOS_DSPKernelAdapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNoise__macOS_DSPKernelAdapter.h; sourceTree = "<group>"; };
+		6B553228259591C1000D15AF /* RNNoise__macOS_DSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RNNoise__macOS_DSPKernel.hpp; sourceTree = "<group>"; };
+		6B55322A259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RNNoise__macOS_DSPKernel.mm; sourceTree = "<group>"; };
+		6B55322D259591C1000D15AF /* AudioUnitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioUnitViewController.swift; sourceTree = "<group>"; };
+		6B55322F259591C1000D15AF /* RNNoise__macOS_-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNNoise__macOS_-Bridging-Header.h"; sourceTree = "<group>"; };
+		6B553231259591C1000D15AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AudioUnitViewController.xib; sourceTree = "<group>"; };
+		6B553233259591C1000D15AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6B553234259591C1000D15AF /* RNNoise__macOS_.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RNNoise__macOS_.entitlements; sourceTree = "<group>"; };
+		6B67D45225946BD0008BC03B /* RNNoise For Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RNNoise For Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B67D45525946BD0008BC03B /* RNNoise_For_MacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNNoise_For_MacApp.swift; sourceTree = "<group>"; };
+		6B67D45725946BD0008BC03B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6B67D45925946BD1008BC03B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6B67D45C25946BD1008BC03B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6B67D45E25946BD1008BC03B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6B67D45F25946BD1008BC03B /* RNNoise_For_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RNNoise_For_Mac.entitlements; sourceTree = "<group>"; };
+		6B67D56325958B10008BC03B /* librnnoise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = librnnoise.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B7F9FD92595BB60005463B4 /* librnnoise-dynamic.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = "librnnoise-dynamic.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6B553216259591C1000D15AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B7F9FDD2595BBA9005463B4 /* librnnoise.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B67D44F25946BD0008BC03B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B7F9FB32595B6CD005463B4 /* librnnoise.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6B55321A259591C1000D15AF /* RNNoise (macOS) */ = {
+			isa = PBXGroup;
+			children = (
+				6B55322F259591C1000D15AF /* RNNoise__macOS_-Bridging-Header.h */,
+				6B553230259591C1000D15AF /* AudioUnitViewController.xib */,
+				6B553233259591C1000D15AF /* Info.plist */,
+				6B553234259591C1000D15AF /* RNNoise__macOS_.entitlements */,
+				6B55321B259591C1000D15AF /* Audio Unit */,
+				6B55321F259591C1000D15AF /* DSP */,
+				6B55322C259591C1000D15AF /* UI */,
+			);
+			path = "RNNoise (macOS)";
+			sourceTree = "<group>";
+		};
+		6B55321B259591C1000D15AF /* Audio Unit */ = {
+			isa = PBXGroup;
+			children = (
+				6B55321C259591C1000D15AF /* RNNoise__macOS_AudioUnit.h */,
+				6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */,
+			);
+			path = "Audio Unit";
+			sourceTree = "<group>";
+		};
+		6B55321F259591C1000D15AF /* DSP */ = {
+			isa = PBXGroup;
+			children = (
+				6B553228259591C1000D15AF /* RNNoise__macOS_DSPKernel.hpp */,
+				6B55322A259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm */,
+				6B553220259591C1000D15AF /* Helpers */,
+			);
+			path = DSP;
+			sourceTree = "<group>";
+		};
+		6B553220259591C1000D15AF /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				6B553221259591C1000D15AF /* DSPKernel.hpp */,
+				6B553223259591C1000D15AF /* DSPKernel.mm */,
+				6B553225259591C1000D15AF /* BufferedAudioBus.hpp */,
+				6B553227259591C1000D15AF /* RNNoise__macOS_DSPKernelAdapter.h */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		6B55322C259591C1000D15AF /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				6B55322D259591C1000D15AF /* AudioUnitViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		6B67D44925946BD0008BC03B = {
+			isa = PBXGroup;
+			children = (
+				6B67D45425946BD0008BC03B /* RNNoise For Mac */,
+				6B55321A259591C1000D15AF /* RNNoise (macOS) */,
+				6B67D45325946BD0008BC03B /* Products */,
+				6B67D56225958B10008BC03B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		6B67D45325946BD0008BC03B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6B67D45225946BD0008BC03B /* RNNoise For Mac.app */,
+				6B553219259591C1000D15AF /* RNNoise (macOS).appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6B67D45425946BD0008BC03B /* RNNoise For Mac */ = {
+			isa = PBXGroup;
+			children = (
+				6B67D45525946BD0008BC03B /* RNNoise_For_MacApp.swift */,
+				6B67D45725946BD0008BC03B /* ContentView.swift */,
+				6B67D45925946BD1008BC03B /* Assets.xcassets */,
+				6B67D45E25946BD1008BC03B /* Info.plist */,
+				6B67D45F25946BD1008BC03B /* RNNoise_For_Mac.entitlements */,
+				6B67D45B25946BD1008BC03B /* Preview Content */,
+			);
+			path = "RNNoise For Mac";
+			sourceTree = "<group>";
+		};
+		6B67D45B25946BD1008BC03B /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				6B67D45C25946BD1008BC03B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6B67D56225958B10008BC03B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6B7F9FD92595BB60005463B4 /* librnnoise-dynamic.dylib */,
+				6B67D56325958B10008BC03B /* librnnoise.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6B553218259591C1000D15AF /* RNNoise (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B553238259591C1000D15AF /* Build configuration list for PBXNativeTarget "RNNoise (macOS)" */;
+			buildPhases = (
+				6B553215259591C1000D15AF /* Sources */,
+				6B553216259591C1000D15AF /* Frameworks */,
+				6B553217259591C1000D15AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RNNoise (macOS)";
+			productName = "RNNoise (macOS)";
+			productReference = 6B553219259591C1000D15AF /* RNNoise (macOS).appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		6B67D45125946BD0008BC03B /* RNNoise For Mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B67D46225946BD1008BC03B /* Build configuration list for PBXNativeTarget "RNNoise For Mac" */;
+			buildPhases = (
+				6B67D44E25946BD0008BC03B /* Sources */,
+				6B67D44F25946BD0008BC03B /* Frameworks */,
+				6B67D45025946BD0008BC03B /* Resources */,
+				6B67D4A425947DED008BC03B /* Embed App Extensions */,
+				6B67D4D025958715008BC03B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6B553236259591C1000D15AF /* PBXTargetDependency */,
+			);
+			name = "RNNoise For Mac";
+			productName = "RNNoise For Mac";
+			productReference = 6B67D45225946BD0008BC03B /* RNNoise For Mac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6B67D44A25946BD0008BC03B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					6B553218259591C1000D15AF = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					6B67D45125946BD0008BC03B = {
+						CreatedOnToolsVersion = 12.3;
+					};
+				};
+			};
+			buildConfigurationList = 6B67D44D25946BD0008BC03B /* Build configuration list for PBXProject "RNNoise For Mac" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6B67D44925946BD0008BC03B;
+			productRefGroup = 6B67D45325946BD0008BC03B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6B67D45125946BD0008BC03B /* RNNoise For Mac */,
+				6B553218259591C1000D15AF /* RNNoise (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6B553217259591C1000D15AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B553222259591C1000D15AF /* DSPKernel.hpp in Resources */,
+				6B553232259591C1000D15AF /* AudioUnitViewController.xib in Resources */,
+				6B553229259591C1000D15AF /* RNNoise__macOS_DSPKernel.hpp in Resources */,
+				6B553226259591C1000D15AF /* BufferedAudioBus.hpp in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B67D45025946BD0008BC03B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B67D45D25946BD1008BC03B /* Preview Assets.xcassets in Resources */,
+				6B67D45A25946BD1008BC03B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6B553215259591C1000D15AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B55322B259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm in Sources */,
+				6B55322E259591C1000D15AF /* AudioUnitViewController.swift in Sources */,
+				6B553224259591C1000D15AF /* DSPKernel.mm in Sources */,
+				6B55321E259591C1000D15AF /* RNNoise__macOS_AudioUnit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B67D44E25946BD0008BC03B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B67D45825946BD0008BC03B /* ContentView.swift in Sources */,
+				6B67D45625946BD0008BC03B /* RNNoise_For_MacApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6B553236259591C1000D15AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6B553218259591C1000D15AF /* RNNoise (macOS) */;
+			targetProxy = 6B553235259591C1000D15AF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		6B553230259591C1000D15AF /* AudioUnitViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6B553231259591C1000D15AF /* Base */,
+			);
+			name = AudioUnitViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6B553239259591C1000D15AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "RNNoise (macOS)/RNNoise__macOS_.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "RNNoise (macOS)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac.RNNoise--macOS-";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNNoise (macOS)/RNNoise__macOS_-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				USER_HEADER_SEARCH_PATHS = rnnoise/include;
+			};
+			name = Debug;
+		};
+		6B55323A259591C1000D15AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "RNNoise (macOS)/RNNoise__macOS_.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "RNNoise (macOS)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac.RNNoise--macOS-";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNNoise (macOS)/RNNoise__macOS_-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				USER_HEADER_SEARCH_PATHS = rnnoise/include;
+			};
+			name = Release;
+		};
+		6B67D46025946BD1008BC03B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		6B67D46125946BD1008BC03B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		6B67D46325946BD1008BC03B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "RNNoise For Mac/RNNoise_For_Mac.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"RNNoise For Mac/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "RNNoise For Mac/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6B67D46425946BD1008BC03B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "RNNoise For Mac/RNNoise_For_Mac.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"RNNoise For Mac/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "RNNoise For Mac/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6B553238259591C1000D15AF /* Build configuration list for PBXNativeTarget "RNNoise (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6B553239259591C1000D15AF /* Debug */,
+				6B55323A259591C1000D15AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B67D44D25946BD0008BC03B /* Build configuration list for PBXProject "RNNoise For Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6B67D46025946BD1008BC03B /* Debug */,
+				6B67D46125946BD1008BC03B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B67D46225946BD1008BC03B /* Build configuration list for PBXNativeTarget "RNNoise For Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6B67D46325946BD1008BC03B /* Debug */,
+				6B67D46425946BD1008BC03B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6B67D44A25946BD0008BC03B /* Project object */;
+}
