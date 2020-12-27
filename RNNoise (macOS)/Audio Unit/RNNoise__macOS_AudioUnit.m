@@ -147,6 +147,18 @@ const AudioUnitParameterID noiseReductionVolumeID = 1;
     [super deallocateRenderResources];
 }
 
+- (NSTimeInterval) latency {
+    // This AU does no buffering (so far) and thus I'm going to pretend it has
+    // no latency for the sake of simplicity.
+    return 0;
+}
+
+- (NSTimeInterval) tailTime {
+    // Tail time may actually be negative because this AU removes noise, but
+    // again 0 for the sake of simplicity.
+    return 0;
+}
+
 #pragma mark - AUAudioUnit (AUAudioUnitImplementation)
 
 // Block which subclassers must provide to implement rendering.

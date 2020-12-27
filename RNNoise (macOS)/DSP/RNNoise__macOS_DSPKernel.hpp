@@ -8,9 +8,10 @@
 #ifndef RNNoise__macOS_DSPKernel_hpp
 #define RNNoise__macOS_DSPKernel_hpp
 
-#import "DSPKernel.hpp"
-#import "rnnoise.h"
-#import <vector>
+#include "DSPKernel.hpp"
+#include "rnnoise.h"
+#include <vector>
+#include <limits>
 
 enum {
     voiceConfidenceThreshold = 0,
@@ -113,19 +114,54 @@ public:
             const float* in = (float*)inBufferListPtr->mBuffers[channel].mData;
             float* out = (float*)outBufferListPtr->mBuffers[channel].mData;
 
-#if 0
-            if (frameCount == rnnoiseSamplesPerBuffer) {
-                // Happy path: same number of samples as expected, no chunking/padding necessary
-            } else {
-                // Unhappy path: must chunk and/or pad
-            }
-#endif
+            // The library expects floating point values in [SHORT_MIN, SHORT_MAX],
+            // because it is extremely academic. Convert by multiplying.
+            float scaled[frameCount];
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                 const int frameOffset = int(frameIndex + bufferOffset);
-                
-                // Do your sample by sample dsp here...
-                // Make it half as loud for now so I can verify that I'm doing the rest of this correctly.
-                out[frameOffset] = 0.5 * in[frameOffset];
+                scaled[frameOffset] = in[frameOffset] * std::numeric_limits<short>::max();
+            }
+
+            float denoised[frameCount];
+            if (frameCount == rnnoiseFramesPerBuffer) {
+                // Happy path: same number of samples as expected, no chunking/padding necessary.
+                rnnoise_process_frame(denoiseStates[channel], (scaled + bufferOffset), (denoised + bufferOffset));
+            } else {
+                // Unhappy path: must chunk and/or zero-pad.
+                float *noisyChunkStart = scaled + bufferOffset;
+                float *denoisedChunkStart = denoised + bufferOffset;
+                AUAudioFrameCount remainingFrames = frameCount;
+                // Take whole chunks with no padding until there is less than
+                // one whole chunk of frames remaining to process.
+                while (remainingFrames >= rnnoiseFramesPerBuffer) {
+                    rnnoise_process_frame(denoiseStates[channel], noisyChunkStart, denoisedChunkStart);
+                    remainingFrames -= rnnoiseFramesPerBuffer;
+                    noisyChunkStart += rnnoiseFramesPerBuffer;
+                    denoisedChunkStart += rnnoiseFramesPerBuffer;
+                }
+                // Copy the remaining frames into a temporary buffer, padded
+                // with zeroes, and process that buffer.
+                if (remainingFrames != 0) {
+                    float lastNoisyChunk[rnnoiseFramesPerBuffer];
+                    float lastDenoisedChunk[rnnoiseFramesPerBuffer];
+                    for (int idx = 0; idx < rnnoiseFramesPerBuffer; ++idx) {
+                        if (idx < remainingFrames) {
+                            lastNoisyChunk[idx] = noisyChunkStart[idx];
+                        } else {
+                            lastNoisyChunk[idx] = 0.0f;
+                        }
+                    }
+                    rnnoise_process_frame(denoiseStates[channel], lastNoisyChunk, lastDenoisedChunk);
+                    for (int idx = 0; idx < remainingFrames; ++idx) {
+                        denoisedChunkStart[idx] = lastDenoisedChunk[idx];
+                    }
+                }
+            }
+
+            // Convert the data back to [-1, 1], for the rest of the AU graph.
+            for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+                const int frameOffset = int(frameIndex + bufferOffset);
+                out[frameOffset] = denoised[frameOffset] / std::numeric_limits<short>::max();
             }
         }
     }
@@ -138,7 +174,7 @@ private:
     bool bypassed = false;
     std::vector<DenoiseState*> denoiseStates;
     // The library's RNN was trained on 480-sample buffers. All supplied buffers must have 480 samples.
-    const int rnnoiseSamplesPerBuffer = 480;
+    const int rnnoiseFramesPerBuffer = 480;
     AudioBufferList* inBufferListPtr = nullptr;
     AudioBufferList* outBufferListPtr = nullptr;
 };
