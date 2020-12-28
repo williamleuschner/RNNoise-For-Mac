@@ -113,7 +113,9 @@ public:
             return;
         }
         
-        const int blockCount = (frameCount + bufferedSamples) / rnnoiseFramesPerBuffer;
+        const int inBufferedSamples = bufferedSamples;
+        int outBufferedSamples = 0;
+        const int blockCount = (frameCount + inBufferedSamples) / rnnoiseFramesPerBuffer;
         
         // Perform per sample dsp on the incoming float *in before assigning it to *out
         for (int channel = 0; channel < chanCount; ++channel) {
@@ -126,17 +128,15 @@ public:
 
             // The library expects floating point values in [SHORT_MIN, SHORT_MAX],
             // because it is extremely academic. Convert by multiplying.
-            float scaled[frameCount + bufferedSamples];
+            float scaled[frameCount + inBufferedSamples];
             const float mulscale = std::numeric_limits<short>::max();
-            memcpy(scaled, inBuffer, sizeof(float) * bufferedSamples);
+            memcpy(scaled, inBuffer, sizeof(float) * inBufferedSamples);
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                 const int frameOffset = int(frameIndex + bufferOffset);
-                const int bufferOffset = int(frameIndex + bufferedSamples);
+                const int bufferOffset = int(frameIndex + inBufferedSamples);
                 scaled[bufferOffset] = in[frameOffset] * mulscale;
             }
             
-            bufferedSamples = 0;
-
             float denoised[blockCount * rnnoiseFramesPerBuffer];
             if (frameCount == rnnoiseFramesPerBuffer) {
                 // Happy path: same number of samples as expected, no chunking/padding necessary.
@@ -145,7 +145,7 @@ public:
                 // Unhappy path: must chunk and/or zero-pad.
                 float *noisyChunkStart = scaled;
                 float *denoisedChunkStart = denoised;
-                AUAudioFrameCount remainingFrames = frameCount + bufferedSamples;
+                AUAudioFrameCount remainingFrames = frameCount + inBufferedSamples;
                 // Take whole chunks with no padding until there is less than
                 // one whole chunk of frames remaining to process.
                 while (remainingFrames >= rnnoiseFramesPerBuffer) {
@@ -158,7 +158,7 @@ public:
                 // with zeroes, and process that buffer.
                 if (remainingFrames != 0) {
                     memcpy(inBuffer, noisyChunkStart, sizeof(float) * remainingFrames);
-                    bufferedSamples = remainingFrames;
+                    outBufferedSamples = remainingFrames;
                 }
             }
 
@@ -169,6 +169,8 @@ public:
                 out[frameOffset] = denoised[frameOffset] * divscale;
             }
         }
+        
+        bufferedSamples = outBufferedSamples;
     }
 
     // MARK: Member Variables
