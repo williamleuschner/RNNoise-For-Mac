@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B55321E259591C1000D15AF /* RNNoise__macOS_AudioUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */; };
 		6B553222259591C1000D15AF /* DSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 6B553221259591C1000D15AF /* DSPKernel.hpp */; };
 		6B553224259591C1000D15AF /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6B553223259591C1000D15AF /* DSPKernel.mm */; };
 		6B553226259591C1000D15AF /* BufferedAudioBus.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 6B553225259591C1000D15AF /* BufferedAudioBus.hpp */; };
@@ -22,6 +21,7 @@
 		6B67D45D25946BD1008BC03B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B67D45C25946BD1008BC03B /* Preview Assets.xcassets */; };
 		6B7F9FB32595B6CD005463B4 /* librnnoise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B67D56325958B10008BC03B /* librnnoise.a */; };
 		6B7F9FDD2595BBA9005463B4 /* librnnoise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B67D56325958B10008BC03B /* librnnoise.a */; };
+		6BD80ABF259AF61E008CBEB9 /* RNNoise__macOS_AudioUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD80ABE259AF61E008CBEB9 /* RNNoise__macOS_AudioUnit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,8 +60,6 @@
 
 /* Begin PBXFileReference section */
 		6B553219259591C1000D15AF /* RNNoise (macOS).appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "RNNoise (macOS).appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B55321C259591C1000D15AF /* RNNoise__macOS_AudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNoise__macOS_AudioUnit.h; sourceTree = "<group>"; };
-		6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNoise__macOS_AudioUnit.m; sourceTree = "<group>"; };
 		6B553221259591C1000D15AF /* DSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernel.hpp; sourceTree = "<group>"; };
 		6B553223259591C1000D15AF /* DSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernel.mm; sourceTree = "<group>"; };
 		6B553225259591C1000D15AF /* BufferedAudioBus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BufferedAudioBus.hpp; sourceTree = "<group>"; };
@@ -82,6 +80,7 @@
 		6B67D45F25946BD1008BC03B /* RNNoise_For_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RNNoise_For_Mac.entitlements; sourceTree = "<group>"; };
 		6B67D56325958B10008BC03B /* librnnoise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = librnnoise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B7F9FD92595BB60005463B4 /* librnnoise-dynamic.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = "librnnoise-dynamic.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BD80ABE259AF61E008CBEB9 /* RNNoise__macOS_AudioUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNNoise__macOS_AudioUnit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,8 +120,7 @@
 		6B55321B259591C1000D15AF /* Audio Unit */ = {
 			isa = PBXGroup;
 			children = (
-				6B55321C259591C1000D15AF /* RNNoise__macOS_AudioUnit.h */,
-				6B55321D259591C1000D15AF /* RNNoise__macOS_AudioUnit.m */,
+				6BD80ABE259AF61E008CBEB9 /* RNNoise__macOS_AudioUnit.swift */,
 			);
 			path = "Audio Unit";
 			sourceTree = "<group>";
@@ -309,10 +307,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BD80ABF259AF61E008CBEB9 /* RNNoise__macOS_AudioUnit.swift in Sources */,
 				6B55322B259591C1000D15AF /* RNNoise__macOS_DSPKernel.mm in Sources */,
 				6B55322E259591C1000D15AF /* AudioUnitViewController.swift in Sources */,
 				6B553224259591C1000D15AF /* DSPKernel.mm in Sources */,
-				6B55321E259591C1000D15AF /* RNNoise__macOS_AudioUnit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
