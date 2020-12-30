@@ -33,22 +33,31 @@ public:
     ~RNNoise__macOS_DSPKernel() {
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             rnnoise_destroy(denoiseStates[chanID]);
+            free(denoiseBuffers[chanID]);
         }
     }
 
     void init(int channelCount, double inSampleRate) {
         chanCount = channelCount;
         sampleRate = float(inSampleRate);
+        // Introduce enough latency so a minimum of a single sample will generate output
+        bufferedInputSamples = 479;
+        bufferedOutputSamples = 0;
         denoiseStates = std::vector<DenoiseState*>(channelCount);
+        denoiseBuffers = std::vector<rnBuffer*>(channelCount);
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             denoiseStates[chanID] = rnnoise_create(NULL);
+            denoiseBuffers[chanID] = (rnBuffer*) calloc(1, sizeof(rnBuffer));
         }
     }
 
     void reset() {
+        bufferedInputSamples = 479;
+        bufferedOutputSamples = 0;
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             rnnoise_destroy(denoiseStates[chanID]);
             denoiseStates[chanID] = rnnoise_create(NULL);
+            memset(denoiseBuffers[chanID], 0, sizeof(rnBuffer));
         }
     }
 
@@ -83,6 +92,10 @@ public:
             default: return 0.f;
         }
     }
+    
+    double getLatency() {
+        return double(rnnoiseFramesPerBuffer - 1) / sampleRate;
+    }
 
     void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList) {
         inBufferListPtr = inBufferList;
@@ -107,31 +120,46 @@ public:
             return;
         }
         
+        
+        // These are constant for all channels, so cache in at start
+        const int inBufferedInputSamples = bufferedInputSamples;
+        int outBufferedInputSamples = 0;
+        const int inBufferedOutputSamples = bufferedOutputSamples;
+        int outBufferedOutputSamples = 0;
+        
         // Perform per sample dsp on the incoming float *in before assigning it to *out
         for (int channel = 0; channel < chanCount; ++channel) {
         
             // Get pointer to immutable input buffer and mutable output buffer
             const float* in = (float*)inBufferListPtr->mBuffers[channel].mData;
             float* out = (float*)outBufferListPtr->mBuffers[channel].mData;
+            
+            float* inBuffer = &denoiseBuffers[channel]->in[0];
+            float* outBuffer = &denoiseBuffers[channel]->out[0];
 
             // The library expects floating point values in [SHORT_MIN, SHORT_MAX],
             // because it is extremely academic. Convert by multiplying.
-            float scaled[frameCount];
+            float scaled[frameCount + inBufferedInputSamples];
+            // buffered input from previous calls is pre-scaled
+            memcpy(scaled, inBuffer, sizeof(float) * inBufferedInputSamples);
+            // new input needs to be scaled
+            const float mulscale = float(std::numeric_limits<short>::max());
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                 const int frameOffset = int(frameIndex + bufferOffset);
-                scaled[frameOffset] = in[frameOffset] * std::numeric_limits<short>::max();
+                const int bufferOffset = int(frameIndex + inBufferedInputSamples);
+                scaled[bufferOffset] = in[frameOffset] * mulscale;
             }
+            
+            // We always want to process ahead of input, so produce at least a block
+            const int blockCount = int((frameCount + inBufferedInputSamples) / rnnoiseFramesPerBuffer);
 
-            float denoised[frameCount];
-            if (frameCount == rnnoiseFramesPerBuffer) {
-                // Happy path: same number of samples as expected, no chunking/padding necessary.
-//                rnnoise_process_frame(denoiseStates[channel], (denoised + bufferOffset), (scaled + bufferOffset));
-                memcpy((denoised + bufferOffset), (scaled + bufferOffset), rnnoiseFramesPerBuffer * sizeof(float));
-            } else {
+            float denoised[inBufferedOutputSamples + blockCount * rnnoiseFramesPerBuffer];
+            memcpy(denoised, outBuffer, sizeof(float) * inBufferedOutputSamples);
+            {
                 // Unhappy path: must chunk and/or zero-pad.
-                float *noisyChunkStart = scaled + bufferOffset;
-                float *denoisedChunkStart = denoised + bufferOffset;
-                AUAudioFrameCount remainingFrames = frameCount;
+                float *noisyChunkStart = scaled;
+                float *denoisedChunkStart = denoised + inBufferedOutputSamples;
+                AUAudioFrameCount remainingFrames = frameCount + inBufferedInputSamples;
                 // Take whole chunks with no padding until there is less than
                 // one whole chunk of frames remaining to process.
                 while (remainingFrames >= rnnoiseFramesPerBuffer) {
@@ -144,29 +172,33 @@ public:
                 // Copy the remaining frames into a temporary buffer, padded
                 // with zeroes, and process that buffer.
                 if (remainingFrames != 0) {
-                    float lastNoisyChunk[rnnoiseFramesPerBuffer];
-                    float lastDenoisedChunk[rnnoiseFramesPerBuffer];
-                    for (int idx = 0; idx < rnnoiseFramesPerBuffer; ++idx) {
-                        if (idx < remainingFrames) {
-                            lastNoisyChunk[idx] = noisyChunkStart[idx];
-                        } else {
-                            lastNoisyChunk[idx] = 0.0f;
-                        }
-                    }
-//                    rnnoise_process_frame(denoiseStates[channel], lastDenoisedChunk, lastNoisyChunk);
-                    memcpy(lastDenoisedChunk, lastNoisyChunk, rnnoiseFramesPerBuffer * sizeof(float));
-                    for (int idx = 0; idx < remainingFrames; ++idx) {
-                        denoisedChunkStart[idx] = lastDenoisedChunk[idx];
-                    }
+                    memcpy(inBuffer, noisyChunkStart, sizeof(float) * remainingFrames);
+                    // It's okay for every channel to clobber this, they should be in sync anyway
+                    outBufferedInputSamples = remainingFrames;
                 }
             }
 
             // Convert the data back to [-1, 1], for the rest of the AU graph.
+            const float divscale = 1.0f / float(std::numeric_limits<short>::max());
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                 const int frameOffset = int(frameIndex + bufferOffset);
-                out[frameOffset] = denoised[frameOffset] / std::numeric_limits<short>::max();
+                out[frameOffset] = denoised[frameIndex] * divscale;
+            }
+            
+            const int blockFrameCount = int(blockCount * rnnoiseFramesPerBuffer + inBufferedOutputSamples);
+            
+            // And here's the overbuffer of output
+            if (frameCount < blockFrameCount) {
+                const int framesRemaining = int(blockFrameCount - frameCount);
+                memcpy(outBuffer, denoised + frameCount, sizeof(float) * framesRemaining);
+                // Okay to clobber this too, all channels should produce equal counts
+                outBufferedOutputSamples = framesRemaining;
             }
         }
+        
+        // Now stash these for the next call
+        bufferedInputSamples = outBufferedInputSamples;
+        bufferedOutputSamples = outBufferedOutputSamples;
     }
 
     // MARK: Member Variables
@@ -180,6 +212,11 @@ private:
     const int rnnoiseFramesPerBuffer = 480;
     AudioBufferList* inBufferListPtr = nullptr;
     AudioBufferList* outBufferListPtr = nullptr;
+    int bufferedInputSamples = 479;
+    int bufferedOutputSamples = 0;
+    // We will never buffer more than a single block worth of audio, in or out. The combined buffers should total to 479 samples.
+    typedef struct rnBuffer { float in[480]; float out[480]; } rnBuffer;
+    std::vector<rnBuffer*> denoiseBuffers;
 };
 
 #endif /* RNNoise__macOS_DSPKernel_hpp */

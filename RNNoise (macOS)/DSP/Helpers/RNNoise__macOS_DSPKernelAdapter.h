@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) AUAudioFrameCount maximumFramesToRender;
 @property (nonatomic, readonly) AUAudioUnitBus *inputBus;
 @property (nonatomic, readonly) AUAudioUnitBus *outputBus;
+@property (nonatomic, readonly) double latency;
 
 - (void)setParameter:(AUParameter *)parameter value:(AUValue)value;
 - (AUValue)valueForParameter:(AUParameter *)parameter;
