@@ -52,6 +52,10 @@
     return _kernel.maximumFramesToRender();
 }
 
+- (double)latency {
+    return _kernel.getLatency();
+}
+
 - (void)setMaximumFramesToRender:(AUAudioFrameCount)maximumFramesToRender {
     _kernel.setMaximumFramesToRender(maximumFramesToRender);
 }

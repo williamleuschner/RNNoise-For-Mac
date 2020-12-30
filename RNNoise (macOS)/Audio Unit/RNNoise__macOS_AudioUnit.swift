@@ -133,7 +133,7 @@ public class RNNoise__macOS_AudioUnit: AUAudioUnit {
 
     public override var latency: TimeInterval {
         // This AU does no buffering yet, thus it has no latency to report.
-        return 0;
+        return kernelAdapter.latency
     }
 
     public override var tailTime: TimeInterval {
