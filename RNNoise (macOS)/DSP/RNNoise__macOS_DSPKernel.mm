@@ -78,6 +78,14 @@
     _inputBus.deallocateRenderResources();
 }
 
+- (void)dealloc {
+    // If this gets called while the DSP code is running, it may deallocate
+    // resources that the DSP code is still using.  Mitigate this by:
+    // Enabling bypass mode so that it might not try to access resources that are going away.
+    _kernel.setBypass(true);
+    // The kernel's destructor will block until the DSP code finishes.
+}
+
 // MARK: -  AUAudioUnit (AUAudioUnitImplementation)
 
 // Subclassers must provide a AUInternalRenderBlock (via a getter) to implement rendering.

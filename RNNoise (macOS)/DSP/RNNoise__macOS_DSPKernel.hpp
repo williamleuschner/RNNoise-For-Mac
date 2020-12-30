@@ -12,6 +12,8 @@
 #include "rnnoise.h"
 #include <vector>
 #include <limits>
+#include <thread>
+#include <mutex>
 
 enum {
     voiceConfidenceThreshold = 0,
@@ -31,6 +33,8 @@ public:
     RNNoise__macOS_DSPKernel() {}
 
     ~RNNoise__macOS_DSPKernel() {
+        // Block until the DSP code finishes.
+        doingDSP.lock();
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             rnnoise_destroy(denoiseStates[chanID]);
             free(denoiseBuffers[chanID]);
@@ -103,8 +107,11 @@ public:
     }
 
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override {
+        // Acquire a lock on the doingDSP mutex until this variable goes out of
+        // scope, to prevent the destructor from destructing during DSP.
+        std::lock_guard<std::mutex> guard(doingDSP);
         if (bypassed) {
-            // Pass the samples through
+            // Don't do any DSP on the signal when this AU is in bypass mode.
             for (int channel = 0; channel < chanCount; ++channel) {
                 if (inBufferListPtr->mBuffers[channel].mData ==  outBufferListPtr->mBuffers[channel].mData) {
                     continue;
@@ -217,6 +224,8 @@ private:
     // We will never buffer more than a single block worth of audio, in or out. The combined buffers should total to 479 samples.
     typedef struct rnBuffer { float in[480]; float out[480]; } rnBuffer;
     std::vector<rnBuffer*> denoiseBuffers;
+    // Avoid deallocating resources while the DSP code is running.
+    std::mutex doingDSP;
 };
 
 #endif /* RNNoise__macOS_DSPKernel_hpp */
