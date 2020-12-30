@@ -84,3 +84,7 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+/AU Test.trak
+/RNNoise Test 2.RPP
+/RNNoise Test 2.RPP-bak
+/RNNoise Test.band
