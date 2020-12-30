@@ -125,7 +125,8 @@ public:
             float denoised[frameCount];
             if (frameCount == rnnoiseFramesPerBuffer) {
                 // Happy path: same number of samples as expected, no chunking/padding necessary.
-                rnnoise_process_frame(denoiseStates[channel], (scaled + bufferOffset), (denoised + bufferOffset));
+//                rnnoise_process_frame(denoiseStates[channel], (denoised + bufferOffset), (scaled + bufferOffset));
+                memcpy((denoised + bufferOffset), (scaled + bufferOffset), rnnoiseFramesPerBuffer * sizeof(float));
             } else {
                 // Unhappy path: must chunk and/or zero-pad.
                 float *noisyChunkStart = scaled + bufferOffset;
@@ -134,7 +135,8 @@ public:
                 // Take whole chunks with no padding until there is less than
                 // one whole chunk of frames remaining to process.
                 while (remainingFrames >= rnnoiseFramesPerBuffer) {
-                    rnnoise_process_frame(denoiseStates[channel], noisyChunkStart, denoisedChunkStart);
+                    rnnoise_process_frame(denoiseStates[channel], denoisedChunkStart, noisyChunkStart);
+//                    memcpy(denoisedChunkStart, noisyChunkStart, rnnoiseFramesPerBuffer * sizeof(float));
                     remainingFrames -= rnnoiseFramesPerBuffer;
                     noisyChunkStart += rnnoiseFramesPerBuffer;
                     denoisedChunkStart += rnnoiseFramesPerBuffer;
@@ -151,7 +153,8 @@ public:
                             lastNoisyChunk[idx] = 0.0f;
                         }
                     }
-                    rnnoise_process_frame(denoiseStates[channel], lastNoisyChunk, lastDenoisedChunk);
+//                    rnnoise_process_frame(denoiseStates[channel], lastDenoisedChunk, lastNoisyChunk);
+                    memcpy(lastDenoisedChunk, lastNoisyChunk, rnnoiseFramesPerBuffer * sizeof(float));
                     for (int idx = 0; idx < remainingFrames; ++idx) {
                         denoisedChunkStart[idx] = lastDenoisedChunk[idx];
                     }

@@ -6,4 +6,3 @@
 //
 
 #import "RNNoise__macOS_DSPKernelAdapter.h"
-#import "RNNoise__macOS_AudioUnit.h"
