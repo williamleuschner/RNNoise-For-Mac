@@ -128,31 +128,35 @@ public:
         }
         
         
-        // These are constant for all channels, so cache in at start
+        // These are constant for all channels, so compute before looping on channels.
         const int inBufferedInputSamples = bufferedInputSamples;
         int outBufferedInputSamples = 0;
         const int inBufferedOutputSamples = bufferedOutputSamples;
         int outBufferedOutputSamples = 0;
-        
-        // Perform per sample dsp on the incoming float *in before assigning it to *out
+
         for (int channel = 0; channel < chanCount; ++channel) {
         
-            // Get pointer to immutable input buffer and mutable output buffer
+            // Get pointer to immutable input buffer and mutable output buffer.
             const float* in = (float*)inBufferListPtr->mBuffers[channel].mData;
             float* out = (float*)outBufferListPtr->mBuffers[channel].mData;
-            
+
+            // Get pointers to per-channel, internal input and output buffers.
             float* inBuffer = &denoiseBuffers[channel]->in[0];
             float* outBuffer = &denoiseBuffers[channel]->out[0];
 
             // The library expects floating point values in [SHORT_MIN, SHORT_MAX],
-            // because it is extremely academic. Convert by multiplying.
+            // because it is extremely academic.
+
+            // Create a temporary buffer to store scaled samples.
             float scaled[frameCount + inBufferedInputSamples];
-            // buffered input from previous calls is pre-scaled
+            // Previous calls have already scaled the samples in the internal input buffer.
             memcpy(scaled, inBuffer, sizeof(float) * inBufferedInputSamples);
-            // new input needs to be scaled
+            // Scale the samples that this AU just received from the previous node in the graph.
             const float mulscale = float(std::numeric_limits<short>::max());
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+                // Offset into the buffer provided by the ancestor node.
                 const int frameOffset = int(frameIndex + bufferOffset);
+                // Offset into the temporary scaling buffer.
                 const int bufferOffset = int(frameIndex + inBufferedInputSamples);
                 scaled[bufferOffset] = in[frameOffset] * mulscale;
             }
@@ -160,41 +164,51 @@ public:
             // We always want to process ahead of input, so produce at least a block
             const int blockCount = int((frameCount + inBufferedInputSamples) / rnnoiseFramesPerBuffer);
 
+            // Create a temporary buffer to store samples that have been denoised.
             float denoised[inBufferedOutputSamples + blockCount * rnnoiseFramesPerBuffer];
+            // Copy any samples that previous calls have already denoised from
+            // the internal output buffer into the temporary one.
             memcpy(denoised, outBuffer, sizeof(float) * inBufferedOutputSamples);
-            {
-                // Unhappy path: must chunk and/or zero-pad.
-                float *noisyChunkStart = scaled;
-                float *denoisedChunkStart = denoised + inBufferedOutputSamples;
-                AUAudioFrameCount remainingFrames = frameCount + inBufferedInputSamples;
-                // Take whole chunks with no padding until there is less than
-                // one whole chunk of frames remaining to process.
-                while (remainingFrames >= rnnoiseFramesPerBuffer) {
-                    rnnoise_process_frame(denoiseStates[channel], denoisedChunkStart, noisyChunkStart);
-//                    memcpy(denoisedChunkStart, noisyChunkStart, rnnoiseFramesPerBuffer * sizeof(float));
-                    remainingFrames -= rnnoiseFramesPerBuffer;
-                    noisyChunkStart += rnnoiseFramesPerBuffer;
-                    denoisedChunkStart += rnnoiseFramesPerBuffer;
-                }
-                // Copy the remaining frames into a temporary buffer, padded
-                // with zeroes, and process that buffer.
-                if (remainingFrames != 0) {
-                    memcpy(inBuffer, noisyChunkStart, sizeof(float) * remainingFrames);
-                    // It's okay for every channel to clobber this, they should be in sync anyway
-                    outBufferedInputSamples = remainingFrames;
-                }
+
+            // Get a pointer to the start of the current 480-sample chunk of noisy samples.
+            float *currentNoisyChunk = scaled;
+            // Get a pointer to the start of the current 480-sample chunk of denoised samples.
+            float *currentDenoisedChunk = denoised + inBufferedOutputSamples;
+            // Calculate how many frames/samples of audio data the AU has to
+            // work with.
+            AUAudioFrameCount remainingFrames = frameCount + inBufferedInputSamples;
+            // Grab 480-sample chunks from the buffer pointers above, denoise
+            // them, and then update the remaining sample/frame count and the
+            // buffer pointers.
+            while (remainingFrames >= rnnoiseFramesPerBuffer) {
+                rnnoise_process_frame(denoiseStates[channel], currentDenoisedChunk, currentNoisyChunk);
+                remainingFrames -= rnnoiseFramesPerBuffer;
+                currentNoisyChunk += rnnoiseFramesPerBuffer;
+                currentDenoisedChunk += rnnoiseFramesPerBuffer;
+            }
+            // Copy leftover frames that didn't fit exactly into a 480-sample
+            // chunk from the end of the noisy buffer to the input buffer.
+            if (remainingFrames != 0) {
+                memcpy(inBuffer, currentNoisyChunk, sizeof(float) * remainingFrames);
+                // It's okay for every channel to clobber this, they should be in sync anyway
+                outBufferedInputSamples = remainingFrames;
             }
 
             // Convert the data back to [-1, 1], for the rest of the AU graph.
+            // The division is done once because floating point division costs
+            // more cycles than floating point multiplication.
             const float divscale = 1.0f / float(std::numeric_limits<short>::max());
             for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                 const int frameOffset = int(frameIndex + bufferOffset);
                 out[frameOffset] = denoised[frameIndex] * divscale;
             }
-            
+
+            // Calculate the number of frames/samples that were just processed.
             const int blockFrameCount = int(blockCount * rnnoiseFramesPerBuffer + inBufferedOutputSamples);
             
-            // And here's the overbuffer of output
+            // If the number of samples/frames this AU must output is smaller
+            // than the number of samples/frames that were just denoised, move
+            // the extras into an internal output buffer for the next call.
             if (frameCount < blockFrameCount) {
                 const int framesRemaining = int(blockFrameCount - frameCount);
                 memcpy(outBuffer, denoised + frameCount, sizeof(float) * framesRemaining);
@@ -203,7 +217,7 @@ public:
             }
         }
         
-        // Now stash these for the next call
+        // Now stash these for the next call.
         bufferedInputSamples = outBufferedInputSamples;
         bufferedOutputSamples = outBufferedOutputSamples;
     }
