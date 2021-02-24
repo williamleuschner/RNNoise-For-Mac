@@ -16,8 +16,8 @@
 #include <mutex>
 
 enum {
-    voiceConfidenceThreshold = 0,
-    noiseReductionVolume = 1,
+    speechConfidenceThresholdPct = 0,
+    voxReleaseDelay = 1,
 };
 
 /*
@@ -49,6 +49,7 @@ public:
         bufferedOutputSamples = 0;
         denoiseStates = std::vector<DenoiseState*>(channelCount);
         denoiseBuffers = std::vector<rnBuffer*>(channelCount);
+        voxReleaseCounterByChannel = std::vector<int>(channelCount);
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             denoiseStates[chanID] = rnnoise_create(NULL);
             denoiseBuffers[chanID] = (rnBuffer*) calloc(1, sizeof(rnBuffer));
@@ -61,6 +62,7 @@ public:
         for (int chanID = 0; chanID < chanCount; ++chanID) {
             rnnoise_destroy(denoiseStates[chanID]);
             denoiseStates[chanID] = rnnoise_create(NULL);
+            voxReleaseCounterByChannel[chanID] = 0;
             memset(denoiseBuffers[chanID], 0, sizeof(rnBuffer));
         }
     }
@@ -75,23 +77,23 @@ public:
 
     void setParameter(AUParameterAddress address, AUValue value) {
         switch (address) {
-            case voiceConfidenceThreshold:
-
+            case speechConfidenceThresholdPct:
+                speechConfidenceThreshold = value;
                 break;
-            case noiseReductionVolume:
-
+            case voxReleaseDelay:
+                voxReleaseBufferCount = int(value);
                 break;
         }
     }
 
     AUValue getParameter(AUParameterAddress address) {
         switch (address) {
-            case voiceConfidenceThreshold:
+            case speechConfidenceThresholdPct:
                 // Return the goal. It is not thread safe to return the ramping value.
-                return 0.f;
+                return speechConfidenceThreshold;
 
-            case noiseReductionVolume:
-                return 0.f;
+            case voxReleaseDelay:
+                return float(voxReleaseBufferCount);
 
             default: return 0.f;
         }
@@ -116,7 +118,7 @@ public:
                 if (inBufferListPtr->mBuffers[channel].mData ==  outBufferListPtr->mBuffers[channel].mData) {
                     continue;
                 }
-                
+
                 for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                     const int frameOffset = int(frameIndex + bufferOffset);
                     const float* in  = (float*)inBufferListPtr->mBuffers[channel].mData  + frameOffset;
@@ -181,7 +183,22 @@ public:
             // them, and then update the remaining sample/frame count and the
             // buffer pointers.
             while (remainingFrames >= rnnoiseFramesPerBuffer) {
-                rnnoise_process_frame(denoiseStates[channel], currentDenoisedChunk, currentNoisyChunk);
+                float frameSpeechConfidence = rnnoise_process_frame(denoiseStates[channel],
+                                                                    currentDenoisedChunk,
+                                                                    currentNoisyChunk);
+                // Noise gate: if this frame is probably speech, set the release
+                // counter to the release buffer count.
+                if (frameSpeechConfidence >= speechConfidenceThreshold) {
+                    voxReleaseCounterByChannel[channel] = voxReleaseBufferCount;
+                }
+                // Noise gate: if the release counter for this channel is at
+                // zero, overwrite the denoised chunk with zeroes.
+                if (voxReleaseCounterByChannel[channel] <= 0) {
+                    memset(currentDenoisedChunk, 0, rnnoiseFramesPerBuffer);
+                } else {
+                    // (Otherwise, decrement the release counter.)
+                    voxReleaseCounterByChannel[channel] -= 1;
+                }
                 remainingFrames -= rnnoiseFramesPerBuffer;
                 currentNoisyChunk += rnnoiseFramesPerBuffer;
                 currentDenoisedChunk += rnnoiseFramesPerBuffer;
@@ -229,15 +246,28 @@ private:
     float sampleRate = 48000.0;
     bool bypassed = false;
     std::vector<DenoiseState*> denoiseStates;
-    // The library's RNN was trained on 480-sample buffers. All supplied buffers must have 480 samples.
+    // The library's RNN was trained on 480-sample buffers. All supplied buffers
+    // must have 480 samples.
     const int rnnoiseFramesPerBuffer = 480;
     AudioBufferList* inBufferListPtr = nullptr;
     AudioBufferList* outBufferListPtr = nullptr;
     int bufferedInputSamples = 479;
     int bufferedOutputSamples = 0;
-    // We will never buffer more than a single block worth of audio, in or out. The combined buffers should total to 479 samples.
+    // We will never buffer more than a single block worth of audio, in or out.
+    // The combined buffers should total to 479 samples.
     typedef struct rnBuffer { float in[480]; float out[480]; } rnBuffer;
     std::vector<rnBuffer*> denoiseBuffers;
+    // RNNoise reports a confidence level that the buffer it just processed
+    // contained speech data. This is the threshold for that confidence level
+    // used to trigger a noise gate.
+    float speechConfidenceThreshold = 0.95;
+    // When the speech confidence from RNNoise drops below
+    // speechConfidenceThreshold, wait this many buffers before zeroing out the
+    // signal (aka activating the noise gate).
+    int voxReleaseBufferCount = 10;
+    // Per-channel counters to keep track of how many buffer lengths remain
+    // before the noise gate activates. 0 means the gate is closed.
+    std::vector<int> voxReleaseCounterByChannel;
     // Avoid deallocating resources while the DSP code is running.
     std::mutex doingDSP;
 };

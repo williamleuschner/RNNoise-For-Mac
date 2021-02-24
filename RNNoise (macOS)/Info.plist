@@ -34,9 +34,9 @@
 					<key>factoryFunction</key>
 					<string>$(PRODUCT_MODULE_NAME).AudioUnitViewController</string>
 					<key>manufacturer</key>
-					<string>XIPH</string>
+					<string>Xiph</string>
 					<key>name</key>
-					<string>XIPH: RNNoise (macOS)</string>
+					<string>Xiph: RNNoise (macOS)</string>
 					<key>sandboxSafe</key>
 					<true/>
 					<key>subtype</key>

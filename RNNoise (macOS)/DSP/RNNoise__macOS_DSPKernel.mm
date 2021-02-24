@@ -25,8 +25,8 @@
         
         // Create a DSP kernel to handle the signal processing.
         _kernel.init(format.channelCount, format.sampleRate);
-        _kernel.setParameter(voiceConfidenceThreshold, 0);
-        _kernel.setParameter(noiseReductionVolume, 0);
+        _kernel.setParameter(speechConfidenceThresholdPct, 0.95f);
+        _kernel.setParameter(voxReleaseDelay, 10.0f);
 
         // Create the input and output busses.
         _inputBus.init(format, 8);

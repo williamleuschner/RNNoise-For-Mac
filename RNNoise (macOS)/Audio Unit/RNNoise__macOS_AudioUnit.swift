@@ -12,6 +12,7 @@ import CoreAudioKit
 
 public class RNNoise__macOS_AudioUnit: AUAudioUnit {
 
+    private let parameters: RNNoise__macOS_AudioUnitParams
     private let kernelAdapter: RNNoise__macOS_DSPKernelAdapter
 
     lazy private var inputBusArray: AUAudioUnitBusArray = {
@@ -31,7 +32,7 @@ public class RNNoise__macOS_AudioUnit: AUAudioUnit {
     }
 
     public override var parameterTree: AUParameterTree? {
-        get { return AUParameterTree.createTree(withChildren: []) }
+        get { return parameters.parameterTree }
         set { /* no setting parameter tree */ }
     }
 
@@ -76,6 +77,8 @@ public class RNNoise__macOS_AudioUnit: AUAudioUnit {
     public override init(componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions = []) throws {
         // Create adapter to communicate with underlying C++ DSP code.
         kernelAdapter = RNNoise__macOS_DSPKernelAdapter()
+        // Set up parameters.
+        self.parameters = RNNoise__macOS_AudioUnitParams(kernelAdapter: kernelAdapter)
 
         try super.init(componentDescription: componentDescription, options: options)
 
