@@ -9,7 +9,9 @@
 #define RNNoise__macOS_DSPKernel_hpp
 
 #include "DSPKernel.hpp"
+extern "C" {
 #include "rnnoise.h"
+}
 #include <vector>
 #include <limits>
 #include <thread>
