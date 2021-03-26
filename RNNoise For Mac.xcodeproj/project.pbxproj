@@ -358,12 +358,14 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "RNNoise (macOS)/RNNoise__macOS_.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "RNNoise (macOS)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac.RNNoise--macOS-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -378,12 +380,14 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "RNNoise (macOS)/RNNoise__macOS_.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "RNNoise (macOS)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac.RNNoise--macOS-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -518,13 +522,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RNNoise For Mac/Preview Content\"";
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "RNNoise For Mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -541,13 +546,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RNNoise For Mac/Preview Content\"";
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "RNNoise For Mac/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.rit.wel2138.RNNoise-For-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
